@@ -1,125 +1,18 @@
-package analizador;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-//package analizadorlexico;
+//package analizador;
+package analizadorlexico;
 /*
     Kevin Mendez Paez 1013665722
     Diego Alejandro Guevera Rocha 97091722406 
  */
 
+import java.io.*;
+import java.math.BigInteger;
+import static java.time.Clock.system;
 import java.util.*;
 import java.util.Scanner;
 
-
 public class AnalizadorLexico {
-	static class Token {
-		public String token;
-        public int fila, columna;
-		public Token(String token, int fila, int columna) {
-	    	this.token = token;
-	    	this.fila = fila;
-	    	this.columna = columna;
-		}
-	}
-	
-	static String anterior = "";
-	static void imprimeArrayToken(Token[] array) {
-        for (int i = 0; i < s-1; i++) {
-        	if (array[i].token.equals("for")){
-        		if (!(array[i+1].token.equals("id"))){
-        			System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'id'.");
-        			pila.push("next");
-        		}
-        	}
-        	if (array[i].token.equals("dim")){        		
-        		if (!(array[i+1].token.equals("id") || array[i+1].token.equals("shared"))){
-        			System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'id' o 'shared'.");
-        		
-        		}
-        	}
-        	if (array[i].token.equals("print")){        		
-        		if (!(array[i+1].token.equals("token_string") || array[i+1].token.equals("id"))){
-        			System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'id' o 'token_string'.");
-        			
-        		}
-        	}
-        	if (array[i].token.equals("input")){        		
-        		if (!(array[i+1].token.equals("id"))){
-        			System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'id'.");
-        		}
-        	}
-        	
-        	if (array[i].token.equals("end")){
-        		if (array[i+1].token.equals("select")){
-        			if(pila.peek()=="end select"){
-        				pila.pop();
-					i+=1;
-        			}
-        			else
-        				System.out.println("error");
-        		}
-        	}
-        	if(array[i].token.equals("select") && !(anterior.equals("end"))){
-        		if(array[i+1].token.equals("case")){
-        			if(array[i+2].token.equals("id")){
-        				if(array[i+3].token.equals("token_pesos")){
-						i+=3;
-        					pila.push("end select");
-        				}
-        				else
-        					System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'token_pesos'.");
-        			}
-        			else
-        				System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'id'.");	
-        		}
-        		else
-        			System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'case'.");	
-        	} 
-        			
-        	
-        		
-        		
-        		
-        		
-        	if (array[i].token.equals("case")){        		
-        		if (!(array[i+1].token.equals("id"))){
-        			System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'id'.");
-        		}
-        	}
-        	if (array[i].token.equals("while")){        		
-        		if (!(array[i+1].token.equals("id"))){
-        			System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'id'.");
-        			pila.push("wend");
-        		}
-        	}
-        	if (array[i].token.equals("loop")){        		
-        		if (!(array[i+1].token.equals("until") || array[i+1].token.equals("while"))){
-        			System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'while' o 'until'.");
-        		}
-        	}
-        	if (array[i].token.equals("sub")){        		
-        		if (!(array[i+1].token.equals("id"))){
-        			System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'id'.");
-        		}
-        	}
-        	if (array[i].token.equals("function")){        		
-        		if (!(array[i+1].token.equals("id"))){
-        			System.out.println("<"+array[i+1].fila+":"+array[i+1].columna+"> Error sintactico: se encontro: '"+array[i+1].token+"'; se esperaba: 'id'.");
-        		}
-        	}
-        	anterior = array[i].token;
-        }
-        
-    }
-	
-	static Token[] arraytokens= new Token[1000];
-	
-	static Stack<String> pila = new Stack<String>();
-	
+    
     public static void main(String[] args) {
         LinkedList<String> PalabrasReservadas=new LinkedList<String>();
         Map<String, String> tokens = new HashMap<String, String>();
@@ -180,26 +73,25 @@ public class AnalizadorLexico {
         tokens.put("#","token_numeral");
         tokens.put("$","token_pesos");
         
-        
-        
-        @SuppressWarnings("resource")
-		Scanner tecl = new Scanner (System.in);
+        Scanner tecl = new Scanner (System.in);
+        String comentario="'";
         int ContadorLinea=0;
-        
-        while((tecl.hasNext())){        	
+        boolean cond=false;
+        while((tecl.hasNext())){
             ContadorLinea++;
             String lineaO = tecl.nextLine();
-            String linea=lineaO.toLowerCase();            
-            analizar(linea,lineaO ,PalabrasReservadas,tokens,ContadorLinea);
-            imprimeArrayToken(arraytokens);
+            String linea=lineaO.toLowerCase();
+            cond=analizar(linea,lineaO ,PalabrasReservadas,tokens,ContadorLinea);
+            //System.out.println(cond);
+            if (cond){
+                break;
+            }
         }
-        
-        
+
     }
     
-    static int s=0;
-    
-    public static void analizar(String linea, String lineaO ,LinkedList<String> PalabrasReservadas, Map<String, String> tokens, int ContadorLinea){
+    public static boolean analizar(String linea, String lineaO ,LinkedList<String> PalabrasReservadas, Map<String, String> tokens, int ContadorLinea){
+        boolean condSald=false;
         byte tipo=0;
         int inicio=0;
         for (int i=0;i<linea.length();i++){
@@ -212,16 +104,19 @@ public class AnalizadorLexico {
                 inicio=i+1;
                 String palabra="";
                 i++;
-                while ((i<linea.length()) &&(lineaO.charAt(i)!='"') ){         
+                while ((i<linea.length()) &&(lineaO.charAt(i)!='"') ){
+         
                     palabra=palabra+lineaO.charAt(i);
                     i++;
                 }
-                if ((i<lineaO.length())&&(lineaO.charAt(i)=='"')){                	
-                	arraytokens[s] = new Token("token_string", ContadorLinea, inicio);
-                	s+=1;
+                if ((i<lineaO.length())&&(lineaO.charAt(i)=='"')){
+         
+                    System.out.println("<token_string,"+palabra+","+ContadorLinea+","+inicio+">");
                 }
                 else{
+      
                     System.out.println(">>> Error lexico (linea: "+ContadorLinea+", posicion: "+inicio+")");
+                    condSald=true;
                     break;
                     
                 }
@@ -251,17 +146,17 @@ public class AnalizadorLexico {
                 if(tipo==1){
                     if((numero.length()>posPunt+1)&&(numero.charAt(posPunt+1)>47 & numero.charAt(posPunt+1)<58)){
                         if (numero.substring(posPunt+1).length()<=6){
-                        	arraytokens[s] = new Token("token_single", ContadorLinea, inicio);
-                        	s+=1;
+
+                            System.out.println("<token_single,"+numero+","+ContadorLinea+","+inicio+">");
                         }else {
-                        	arraytokens[s] = new Token("token_double", ContadorLinea, inicio);
-                            s+=1;
+                            //es un double
+                            System.out.println("<token_double,"+numero+","+ContadorLinea+","+inicio+">");
                         }
                     }
                     else{
-                        arraytokens[s] = new Token("token_integer", ContadorLinea, inicio);
-                        s+=1;
+                        System.out.println("<token_integer,"+numero.substring(0,numero.length()-1)+","+ContadorLinea+","+inicio+">");
                         System.out.println(">>> Error lexico (linea: "+ContadorLinea+", posicion: "+(inicio+numero.substring(0,numero.length()-1).length())+")");
+                        condSald=true;
                         break;
                     }
                     
@@ -270,12 +165,10 @@ public class AnalizadorLexico {
                     int num=Integer.valueOf(numero);
                     if (num<=32767 & num>=-32767){
                         //es un integer, esta dentro de este rango
-                    	arraytokens[s] = new Token("token_integer", ContadorLinea, inicio);
-                    	s+=1;
+                        System.out.println("<token_integer,"+numero+","+ContadorLinea+","+inicio+">");
                     } else{
                         //es un long
-                    	arraytokens[s] = new Token("token_long", ContadorLinea, inicio);
-                    	s+=1;
+                        System.out.println("<token_long,"+numero+","+ContadorLinea+","+inicio+">");
                     }
                 }
 
@@ -289,21 +182,21 @@ public class AnalizadorLexico {
 
                 while ((i<linea.length()) &&((linea.charAt(i)>96 & linea.charAt(i)<123)|(linea.charAt(i)=='_')|(linea.charAt(i)>47 & linea.charAt(i)<58))){
                     palabra=palabra+linea.charAt(i);
+
                     if((PalabrasReservadas.contains(palabra)) && (((inicio-2>=0)&&(linea.charAt(inicio-2)==' '))|(inicio==1)) && (((i+1<linea.length())&&(linea.charAt(i+1)==' '))|(i==linea.length()-1)) ){
-                    	arraytokens[s] = new Token(palabra, ContadorLinea, inicio);
-                    	s+=1;
+
+                        System.out.println("<"+palabra+","+ContadorLinea+","+inicio+">");
                     }
 
                     else if((tokens.containsKey(palabra)) && (((i+1<linea.length())&&((linea.charAt(i+1)>=123 | linea.charAt(i+1)<=96 )&(linea.charAt(i+1)>=58 | linea.charAt(i+1)<=47 )))|(i==linea.length()-1)) ){
-                    	arraytokens[s] = new Token(tokens.get(palabra), ContadorLinea, inicio);
-                    	s+=1;
+
+                        System.out.println("<"+tokens.get(palabra)+","+ContadorLinea+","+inicio+">");
                     }
                     
                     else if(((i+1<linea.length())&&((linea.charAt(i+1)==' ')|(((linea.charAt(i+1)<=96 | linea.charAt(i+1)>=123)&(linea.charAt(i+1)<=47 | linea.charAt(i+1)>=58))&(linea.charAt(i+1)!='_'))))|(i+1==linea.length())) {
-                    	arraytokens[s] = new Token("id", ContadorLinea, inicio);             
-                    	s+=1;
+
+                        System.out.println("<id,"+palabra+","+ContadorLinea+","+inicio+">");
                     }
-                    
                     i++;
                 }
                 i--;
@@ -316,45 +209,47 @@ public class AnalizadorLexico {
                 if (linea.charAt(i)=='<'){
 
                     if ((i+1<linea.length())&&(linea.charAt(i+1)=='=')){
-                    	arraytokens[s] = new Token("token_menor_igual", ContadorLinea, inicio);
-                    	s+=1;
+        
+                        System.out.println("<token_menor_igual"+","+ContadorLinea+","+inicio+">");
                         i++;
                     }
                     else if ((i+1<linea.length())&&(linea.charAt(i+1)=='>')){
-                    	arraytokens[s] = new Token("token_dif", ContadorLinea, inicio);
-                    	s+=1;
+                        System.out.println("<token_dif"+","+ContadorLinea+","+inicio+">");
                         i++;
                     }
                     else{
+
                         palabra=palabra+linea.charAt(i);
-                        arraytokens[s] = new Token(tokens.get(palabra), ContadorLinea, inicio);
-                    	s+=1;
+                        System.out.println("<"+tokens.get(palabra)+","+ContadorLinea+","+inicio+">");
                     }
                 }
                 else if (linea.charAt(i)=='>'){
                     if ((i+1<linea.length())&&(linea.charAt(i+1)=='=')){
-                    	arraytokens[s] = new Token("token_mayor_igual", ContadorLinea, inicio);
-                    	s+=1;
+                        System.out.println("<token_mayor_igual"+","+ContadorLinea+","+inicio+">");
                         i++;
                     }
                     else{
                         palabra=palabra+linea.charAt(i);
-                        arraytokens[s] = new Token(tokens.get(palabra), ContadorLinea, inicio);
-                    	s+=1;
+                        System.out.println("<"+tokens.get(palabra)+","+ContadorLinea+","+inicio+">");
                     }
                 }
-                else{                	
+                else{
+   
                     palabra=palabra+linea.charAt(i);
-                    arraytokens[s] = new Token(tokens.get(palabra), ContadorLinea, inicio);
-                	s+=1;
+                    System.out.println("<"+tokens.get(palabra)+","+ContadorLinea+","+inicio+">");
                 }
             }
             else if (linea.charAt(i)!=' '){
+       
                 System.out.println(">>> Error lexico (linea: "+ContadorLinea+", posicion: "+(i+1)+")");
+                condSald=true;
                 break;
                
             }
 
         }
-    }     
+        return condSald;
+    } 
+    
+    
 }
