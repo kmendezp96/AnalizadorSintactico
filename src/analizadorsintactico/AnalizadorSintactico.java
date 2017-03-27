@@ -57,7 +57,7 @@ public class AnalizadorLexico {
         		if (array[i+1].token.equals("select")){
         			if(pila.peek()=="end select"){
         				pila.pop();
-        				System.out.println("!!!!");
+					i+=1;
         			}
         			else
         				System.out.println("error");
@@ -67,6 +67,7 @@ public class AnalizadorLexico {
         		if(array[i+1].token.equals("case")){
         			if(array[i+2].token.equals("id")){
         				if(array[i+3].token.equals("token_pesos")){
+						i+=3;
         					pila.push("end select");
         				}
         				else
